@@ -1,0 +1,37 @@
+String GOOGLE_SCRIPT_ID = "AKfycbwENyTEUDVFwheGLLUIYYrwQsdUEnJN6-iVyBm1WTXdFWKbQFcD1Qp32vLgLJrve1gjw";
+int count1 = 0;
+int count2 = 0;
+void setup () {
+delay (1000);
+Serial.begin(115200);
+delay(1000);
+// connect to WiFi
+Serial.println ();
+Serial.print("Connecting to wifi: ");
+Serial.println(ssid);
+Serial.flush() ;
+WiFi.begin (ssid, password);
+while (WiFi.status() != WL_CONNECTED)
+{
+delay (500);
+Serial.print(".");
+}
+}
+void loop () {
+if (WiFi.status () == WL_CONNECTED) {
+count2 = count1 *count1;
+String urlFinal = "https://script.google.com/macros/s/"+GOOGLE_SCRIPT_ID+
+"/exec?"+"data1=" + String (count1) + "&data2=" + String (count2);
+Serial.print ("POST data to spreadsheet:");
+Serial.println (urlFinal);
+HTTPClient http;
+http.begin (urlFinal.c_str () );
+http.setFollowRedirects (HTTPC_STRICT_FOLLOW_REDIRECTS) ;
+int httpCode = http.GET () ;
+Serial.print ("HTTP Status Code: ");
+Serial.println (httpCode);
+http.end () ;
+}
+count1++;
+delay (1000);
+}
